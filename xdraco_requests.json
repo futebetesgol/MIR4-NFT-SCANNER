@@ -24,13 +24,13 @@
       "status": 200,
       "type": "xhr",
       "content_type": "application/json",
-      "url": "https://webapi.mir4global.com/wallet/prices/hydra/lastest"
+      "url": "https://webapi.mir4global.com/wallet/prices/draco/lastest"
     },
     {
       "status": 200,
       "type": "xhr",
       "content_type": "application/json",
-      "url": "https://webapi.mir4global.com/wallet/prices/draco/lastest"
+      "url": "https://webapi.mir4global.com/wallet/prices/hydra/lastest"
     },
     {
       "status": 200,

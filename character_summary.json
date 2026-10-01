@@ -1,0 +1,29 @@
+{
+  "status": 200,
+  "url": "https://webapi.mir4global.com/nft/character/summary?seq=2330341&languageCode=en",
+  "data": {
+    "code": 200,
+    "data": {
+      "character": {
+        "name": "TRADEitmsPVP",
+        "worldName": "ASIA334",
+        "transportID": "356191",
+        "class": "4",
+        "level": "156",
+        "powerScore": "440466",
+        "isNew": "1",
+        "MirageScore": 0,
+        "MiraX": 0,
+        "Reinforce": 0
+      },
+      "mintedTS": 1710758074,
+      "sealedTS": 1710758074,
+      "nftID": "92045",
+      "blockChain": "WEMIX",
+      "price": 2399,
+      "tradeType": 2,
+      "contractAddress": "0x1dbf9b33e59972ed753cae1423f4f23deec70cc9",
+      "equipItem": []
+    }
+  }
+}

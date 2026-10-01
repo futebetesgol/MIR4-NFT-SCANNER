@@ -1,0 +1,54 @@
+{
+  "trade_id": "2330341",
+  "xdraco_url": "https://www.xdraco.com/nft/trade/2330341",
+  "rules": {
+    "class": "Arbalista",
+    "max_power": 500000,
+    "minimum_eva": 5000,
+    "priority": [
+      "EVA",
+      "CRIT EVA",
+      "Skill DMG Reduction",
+      "PvP DMG Reduction",
+      "All DMG Reduction"
+    ]
+  },
+  "requests": [
+    {
+      "status": 200,
+      "type": "fetch",
+      "content_type": "application/json",
+      "url": "https://www.xdraco.com/redirections.json"
+    },
+    {
+      "status": 200,
+      "type": "xhr",
+      "content_type": "application/json",
+      "url": "https://webapi.mir4global.com/wallet/prices/hydra/lastest"
+    },
+    {
+      "status": 200,
+      "type": "xhr",
+      "content_type": "application/json",
+      "url": "https://webapi.mir4global.com/wallet/prices/draco/lastest"
+    },
+    {
+      "status": 200,
+      "type": "xhr",
+      "content_type": "application/json",
+      "url": "https://webapi.mir4global.com/nft/character/summary?seq=2330341&languageCode=en"
+    },
+    {
+      "status": 200,
+      "type": "xhr",
+      "content_type": "application/json",
+      "url": "https://webapi.mir4global.com/nft/character/inven?transportID=356191&languageCode=en"
+    },
+    {
+      "status": 200,
+      "type": "xhr",
+      "content_type": "application/json",
+      "url": "https://webapi.mir4global.com/nft/character/tradehistory?tokenID=92045&languageCode=en"
+    }
+  ]
+}

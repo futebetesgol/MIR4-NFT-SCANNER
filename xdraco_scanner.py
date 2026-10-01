@@ -1,740 +1,369 @@
-import re
+import asyncio
 import json
-import httpx
-from bs4 import BeautifulSoup
-from dataclasses import dataclass
-from typing import Optional
+from urllib.parse import urlparse
+
+from playwright.async_api import async_playwright
 
 
-BASE_URL = "https://www.xdraco.com"
-
-# ==========================================================
-# REGRAS DO NOSSO SCANNER
-# ==========================================================
-
-MAX_POWER = 500_000
-TARGET_CLASS = "Arbalist"
+TRADE_ID = "2330341"
+XDRACO_URL = f"https://www.xdraco.com/nft/trade/{TRADE_ID}"
 
 
-@dataclass
-class NFTBasicInfo:
-    trade_id: str
-    name: str
-    character_class: str
-    level: int
-    power: int
-    server: str
-    nft_id: Optional[str]
-    url: str
+async def main():
 
+    print("")
+    print("=" * 70)
+    print("       MIR4 - DETECTOR DE DADOS DO XDRACO")
+    print("=" * 70)
+    print("")
+    print("NFT:", TRADE_ID)
+    print("URL:", XDRACO_URL)
+    print("")
 
-# ==========================================================
-# CONVERTER NÚMEROS
-# ==========================================================
+    captured = []
 
-def number(text: str) -> int:
+    async with async_playwright() as p:
 
-    if not text:
-        return 0
-
-    value = re.sub(
-        r"[^\d]",
-        "",
-        str(text)
-    )
-
-    if not value:
-        return 0
-
-    return int(value)
-
-
-# ==========================================================
-# BAIXAR PÁGINA DO NFT
-# ==========================================================
-
-async def download_nft_page(trade_id: str):
-
-    url = f"{BASE_URL}/nft/trade/{trade_id}"
-
-    headers = {
-        "User-Agent": (
-            "Mozilla/5.0 "
-            "(Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 "
-            "(KHTML, like Gecko) "
-            "Chrome/140.0.0.0 Safari/537.36"
-        ),
-        "Accept": (
-            "text/html,application/xhtml+xml,"
-            "application/xml;q=0.9,image/avif,"
-            "image/webp,*/*;q=0.8"
-        ),
-        "Accept-Language":
-            "en-US,en;q=0.9,pt-BR;q=0.8",
-        "Cache-Control":
-            "no-cache",
-        "Pragma":
-            "no-cache",
-    }
-
-    async with httpx.AsyncClient(
-        headers=headers,
-        follow_redirects=True,
-        timeout=30
-    ) as client:
-
-        response = await client.get(url)
-
-        print("")
-        print("========== XDRACO HTTP ==========")
-        print("URL:", url)
-        print("STATUS:", response.status_code)
-        print(
-            "CONTENT-TYPE:",
-            response.headers.get(
-                "content-type",
-                ""
-            )
+        browser = await p.chromium.launch(
+            headless=True,
+            args=[
+                "--no-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-blink-features=AutomationControlled",
+            ],
         )
-        print(
-            "TAMANHO HTML:",
-            len(response.text)
+
+        context = await browser.new_context(
+            viewport={
+                "width": 1920,
+                "height": 1080,
+            },
+            locale="en-US",
+            user_agent=(
+                "Mozilla/5.0 "
+                "(Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 "
+                "(KHTML, like Gecko) "
+                "Chrome/140.0.0.0 Safari/537.36"
+            ),
         )
-        print(
-            "URL FINAL:",
-            str(response.url)
-        )
-        print("=================================")
-        print("")
 
-        response.raise_for_status()
+        page = await context.new_page()
 
-        return response.text
+        # ==================================================
+        # CAPTURAR RESPOSTAS
+        # ==================================================
 
+        async def handle_response(response):
 
-# ==========================================================
-# PROCURAR DADOS DENTRO DE JSON
-# ==========================================================
+            try:
 
-def walk_json(data, path="root"):
+                request = response.request
 
-    found = []
+                resource_type = request.resource_type
 
-    if isinstance(data, dict):
+                content_type = (
+                    response.headers.get(
+                        "content-type",
+                        ""
+                    )
+                ).lower()
 
-        for key, value in data.items():
+                url = response.url
 
-            current_path = (
-                f"{path}.{key}"
-            )
+                interesting = (
+                    resource_type in [
+                        "xhr",
+                        "fetch",
+                    ]
+                    or "json" in content_type
+                )
 
-            key_lower = str(key).lower()
+                if not interesting:
+                    return
 
-            interesting = [
-                "power",
-                "class",
-                "level",
-                "server",
-                "nft",
-                "character",
-                "evasion",
-                "eva",
-                "crit",
-                "spirit",
-                "stone",
-                "mystical",
-                "deck",
-            ]
+                item = {
+                    "status": response.status,
+                    "type": resource_type,
+                    "content_type": content_type,
+                    "url": url,
+                }
 
-            if any(
-                word in key_lower
-                for word in interesting
-            ):
+                captured.append(item)
 
-                if isinstance(
-                    value,
-                    (str, int, float, bool)
-                ):
+                print("")
+                print("------------------------------------------")
+                print("RESPOSTA ENCONTRADA")
+                print("------------------------------------------")
+                print("STATUS:", response.status)
+                print("TIPO:", resource_type)
+                print("CONTENT-TYPE:", content_type)
+                print("URL:", url)
 
-                    found.append(
-                        (
-                            current_path,
-                            value
+                # Tentar ler resposta
+                try:
+
+                    body = await response.text()
+
+                except Exception:
+
+                    body = ""
+
+                print(
+                    "TAMANHO:",
+                    len(body)
+                )
+
+                if not body:
+                    return
+
+                lower = body.lower()
+
+                keywords = [
+                    "power",
+                    "character",
+                    "arbalist",
+                    "spirit",
+                    "stone",
+                    "mystical",
+                    "deck",
+                    "evasion",
+                    "crit",
+                    "nft",
+                ]
+
+                found_keywords = []
+
+                for keyword in keywords:
+
+                    if keyword in lower:
+
+                        found_keywords.append(
+                            keyword
+                        )
+
+                if found_keywords:
+
+                    print(
+                        ">>> POSSÍVEL API IMPORTANTE <<<"
+                    )
+
+                    print(
+                        "PALAVRAS:",
+                        ", ".join(
+                            found_keywords
                         )
                     )
 
-            found.extend(
-                walk_json(
-                    value,
-                    current_path
+                    # Mostrar apenas parte da resposta
+                    preview = (
+                        body[:3000]
+                        .replace("\n", " ")
+                        .replace("\r", " ")
+                    )
+
+                    print("")
+                    print("INÍCIO DA RESPOSTA:")
+                    print(preview)
+                    print("")
+
+            except Exception as error:
+
+                print(
+                    "Erro ao analisar resposta:",
+                    str(error)
                 )
-            )
 
-    elif isinstance(data, list):
-
-        for index, value in enumerate(data):
-
-            found.extend(
-                walk_json(
-                    value,
-                    f"{path}[{index}]"
-                )
-            )
-
-    return found
-
-
-# ==========================================================
-# DIAGNÓSTICO DO HTML
-# ==========================================================
-
-def diagnose_html(
-    trade_id: str,
-    html: str
-):
-
-    print("")
-    print(
-        "=========================================="
-    )
-    print(
-        "        DIAGNÓSTICO XDRACO"
-    )
-    print(
-        "=========================================="
-    )
-
-    lower_html = html.lower()
-
-    keywords = [
-        "power",
-        "power score",
-        "arbalist",
-        "character",
-        "spirit",
-        "magic stone",
-        "mystical piece",
-        "evasion",
-        "crit eva",
-        "__next_data__",
-        "application/json",
-    ]
-
-    print("")
-    print("PALAVRAS ENCONTRADAS:")
-    print("")
-
-    for keyword in keywords:
-
-        exists = (
-            keyword.lower()
-            in lower_html
+        page.on(
+            "response",
+            handle_response
         )
 
-        print(
-            f"{keyword}: "
-            f"{'SIM' if exists else 'NAO'}"
-        )
+        # ==================================================
+        # ABRIR XDRACO
+        # ==================================================
 
-    soup = BeautifulSoup(
-        html,
-        "html.parser"
-    )
-
-    # ======================================================
-    # PROCURAR SCRIPTS JSON
-    # ======================================================
-
-    scripts = soup.find_all("script")
-
-    print("")
-    print(
-        "TOTAL DE <script>:",
-        len(scripts)
-    )
-
-    json_scripts = []
-
-    for index, script in enumerate(scripts):
-
-        script_type = (
-            script.get("type")
-            or ""
-        ).lower()
-
-        script_id = (
-            script.get("id")
-            or ""
-        )
-
-        content = (
-            script.string
-            or script.get_text()
-            or ""
-        ).strip()
-
-        if not content:
-            continue
-
-        if (
-            "json" in script_type
-            or script_id == "__NEXT_DATA__"
-        ):
-
-            json_scripts.append(
-                (
-                    index,
-                    script_type,
-                    script_id,
-                    content
-                )
-            )
-
-    print(
-        "SCRIPTS JSON:",
-        len(json_scripts)
-    )
-
-    # ======================================================
-    # ANALISAR JSON EMBUTIDO
-    # ======================================================
-
-    for (
-        index,
-        script_type,
-        script_id,
-        content
-    ) in json_scripts:
-
+        print("Abrindo XDRACO...")
         print("")
-        print(
-            "------------------------------------------"
-        )
-
-        print(
-            f"SCRIPT #{index}"
-        )
-
-        print(
-            "TYPE:",
-            script_type
-        )
-
-        print(
-            "ID:",
-            script_id
-        )
-
-        print(
-            "TAMANHO:",
-            len(content)
-        )
 
         try:
 
-            data = json.loads(
-                content
+            await page.goto(
+                XDRACO_URL,
+                wait_until="domcontentloaded",
+                timeout=60000,
             )
-
-            found = walk_json(
-                data
-            )
-
-            print(
-                "CAMPOS INTERESSANTES:",
-                len(found)
-            )
-
-            # Não imprimir milhares de linhas.
-            for path, value in found[:150]:
-
-                print(
-                    f"{path} = {value}"
-                )
 
         except Exception as error:
 
             print(
-                "Não foi possível converter "
-                "esse script para JSON:",
+                "Aviso ao carregar página:",
                 str(error)
             )
 
-    # ======================================================
-    # MOSTRAR TRECHOS PERTO DE PALAVRAS IMPORTANTES
-    # ======================================================
-
-    plain_text = soup.get_text(
-        " ",
-        strip=True
-    )
-
-    print("")
-    print(
-        "=========================================="
-    )
-    print(
-        "TRECHOS DO TEXTO:"
-    )
-    print(
-        "=========================================="
-    )
-
-    search_terms = [
-        "Power",
-        "Arbalist",
-        "Spirit",
-        "Magic Stone",
-        "Mystical Piece",
-        "Evasion",
-    ]
-
-    for term in search_terms:
-
-        match = re.search(
-            re.escape(term),
-            plain_text,
-            re.I
+        # Esperar chamadas JavaScript
+        print(
+            "Esperando o XDRACO carregar os dados..."
         )
 
-        if not match:
-            continue
-
-        start = max(
-            0,
-            match.start() - 200
+        await page.wait_for_timeout(
+            15000
         )
 
-        end = min(
-            len(plain_text),
-            match.end() + 500
+        # ==================================================
+        # INFORMAÇÕES DA PÁGINA
+        # ==================================================
+
+        print("")
+        print("=" * 70)
+        print("INFORMAÇÕES DA PÁGINA")
+        print("=" * 70)
+
+        print(
+            "URL FINAL:",
+            page.url
         )
+
+        print(
+            "TÍTULO:",
+            await page.title()
+        )
+
+        body_text = ""
+
+        try:
+
+            body_text = await page.locator(
+                "body"
+            ).inner_text(
+                timeout=10000
+            )
+
+        except Exception:
+            pass
+
+        print(
+            "TAMANHO DO TEXTO:",
+            len(body_text)
+        )
+
+        # Procurar palavras na página renderizada
+        print("")
+        print("PALAVRAS NA PÁGINA RENDERIZADA:")
+
+        for keyword in [
+            "Power",
+            "Arbalist",
+            "Spirit",
+            "Magic Stone",
+            "Mystical Piece",
+            "Evasion",
+            "NFT",
+        ]:
+
+            exists = (
+                keyword.lower()
+                in body_text.lower()
+            )
+
+            print(
+                keyword,
+                "=",
+                "SIM" if exists else "NÃO"
+            )
+
+        # ==================================================
+        # MOSTRAR PARTE DO TEXTO RENDERIZADO
+        # ==================================================
+
+        if body_text:
+
+            print("")
+            print("=" * 70)
+            print("TEXTO RENDERIZADO - AMOSTRA")
+            print("=" * 70)
+
+            print(
+                body_text[:5000]
+            )
+
+        # ==================================================
+        # SALVAR TODAS AS URLs ENCONTRADAS
+        # ==================================================
+
+        print("")
+        print("=" * 70)
+        print("REQUISIÇÕES XHR/FETCH ENCONTRADAS")
+        print("=" * 70)
+
+        unique = {}
+
+        for item in captured:
+
+            unique[
+                item["url"]
+            ] = item
+
+        for index, item in enumerate(
+            unique.values(),
+            start=1
+        ):
+
+            print("")
+            print(
+                f"[{index}]"
+            )
+
+            print(
+                "STATUS:",
+                item["status"]
+            )
+
+            print(
+                "TIPO:",
+                item["type"]
+            )
+
+            print(
+                "URL:",
+                item["url"]
+            )
+
+        # ==================================================
+        # SALVAR JSON PARA ANALISARMOS
+        # ==================================================
+
+        with open(
+            "xdraco_requests.json",
+            "w",
+            encoding="utf-8"
+        ) as file:
+
+            json.dump(
+                list(unique.values()),
+                file,
+                ensure_ascii=False,
+                indent=2,
+            )
 
         print("")
         print(
-            f"--- {term} ---"
+            "Arquivo criado: xdraco_requests.json"
         )
 
+        print("")
+        print("=" * 70)
         print(
-            plain_text[start:end]
+            f"TOTAL DE REQUISIÇÕES INTERESSANTES: "
+            f"{len(unique)}"
         )
+        print("=" * 70)
 
-    print("")
-    print(
-        "=========================================="
+        await browser.close()
+
+
+if __name__ == "__main__":
+
+    asyncio.run(
+        main()
     )
-    print(
-        "       FIM DO DIAGNÓSTICO"
-    )
-    print(
-        "=========================================="
-    )
-    print("")
-
-
-# ==========================================================
-# TENTAR PEGAR DADOS BÁSICOS
-# ==========================================================
-
-def parse_basic_info(
-    trade_id: str,
-    html: str
-) -> Optional[NFTBasicInfo]:
-
-    soup = BeautifulSoup(
-        html,
-        "html.parser"
-    )
-
-    text = soup.get_text(
-        " ",
-        strip=True
-    )
-
-    # Primeiro fazemos o diagnóstico.
-    diagnose_html(
-        trade_id,
-        html
-    )
-
-    # ======================================================
-    # POWER
-    # ======================================================
-
-    power_patterns = [
-        r"Power\s*Score\s*[:\-]?\s*([\d,]+)",
-        r"Power\s*[:\-]?\s*([\d,]+)",
-    ]
-
-    power = 0
-
-    for pattern in power_patterns:
-
-        match = re.search(
-            pattern,
-            text,
-            re.I
-        )
-
-        if match:
-
-            power = number(
-                match.group(1)
-            )
-
-            break
-
-    # ======================================================
-    # CLASSE
-    # ======================================================
-
-    classes = [
-        "Arbalist",
-        "Warrior",
-        "Sorcerer",
-        "Taoist",
-        "Lancer",
-        "Darkist",
-        "Arcanist",
-        "Lionheart",
-    ]
-
-    character_class = ""
-
-    for cls in classes:
-
-        if re.search(
-            rf"\b{re.escape(cls)}\b",
-            text,
-            re.I
-        ):
-
-            character_class = cls
-            break
-
-    # ======================================================
-    # LEVEL
-    # ======================================================
-
-    level_match = re.search(
-        r"(?:Level|Lv\.?)\s*[:\-]?\s*(\d+)",
-        text,
-        re.I
-    )
-
-    level = (
-        int(level_match.group(1))
-        if level_match
-        else 0
-    )
-
-    # ======================================================
-    # NFT ID
-    # ======================================================
-
-    nft_match = re.search(
-        r"NFT\s*ID\s*[:#\-]?\s*(\d+)",
-        text,
-        re.I
-    )
-
-    nft_id = (
-        nft_match.group(1)
-        if nft_match
-        else None
-    )
-
-    # ======================================================
-    # SERVIDOR
-    # ======================================================
-
-    server_match = re.search(
-        r"\b(?:ASIA|SA|EU|NA)\d{3}\b",
-        text,
-        re.I
-    )
-
-    server = (
-        server_match.group(0)
-        if server_match
-        else "Desconhecido"
-    )
-
-    print("")
-    print(
-        "========== RESULTADO BÁSICO =========="
-    )
-    print(
-        "CLASSE:",
-        character_class
-        or "NÃO ENCONTRADA"
-    )
-    print(
-        "POWER:",
-        power
-    )
-    print(
-        "LEVEL:",
-        level
-    )
-    print(
-        "NFT ID:",
-        nft_id
-    )
-    print(
-        "SERVER:",
-        server
-    )
-    print(
-        "======================================"
-    )
-    print("")
-
-    # ======================================================
-    # NÃO INVENTAR RESULTADOS
-    # ======================================================
-
-    if not character_class:
-
-        print(
-            "FALHA: classe não encontrada."
-        )
-
-        return None
-
-    if power <= 0:
-
-        print(
-            "FALHA: Power Score não encontrado."
-        )
-
-        return None
-
-    # ======================================================
-    # REGRAS OBRIGATÓRIAS
-    # ======================================================
-
-    if (
-        character_class.lower()
-        != TARGET_CLASS.lower()
-    ):
-
-        print(
-            "ELIMINADO: não é Arbalista."
-        )
-
-        return None
-
-    if power > MAX_POWER:
-
-        print(
-            "ELIMINADO: Power acima de 500.000."
-        )
-
-        return None
-
-    return NFTBasicInfo(
-        trade_id=str(trade_id),
-        name="Arbalista",
-        character_class=character_class,
-        level=level,
-        power=power,
-        server=server,
-        nft_id=nft_id,
-        url=(
-            f"{BASE_URL}/nft/trade/"
-            f"{trade_id}"
-        )
-    )
-
-
-# ==========================================================
-# INSPECIONAR NFT
-# ==========================================================
-
-async def inspect_nft(
-    trade_id: str
-):
-
-    html = await download_nft_page(
-        trade_id
-    )
-
-    character = parse_basic_info(
-        trade_id,
-        html
-    )
-
-    if not character:
-
-        return {
-            "approved_basic_filter":
-                False,
-
-            "trade_id":
-                str(trade_id),
-
-            "xdraco_url":
-                (
-                    f"{BASE_URL}/nft/trade/"
-                    f"{trade_id}"
-                ),
-
-            "diagnostic":
-                "Verifique o log do GitHub Actions."
-        }
-
-    return {
-
-        "approved_basic_filter":
-            True,
-
-        "trade_id":
-            character.trade_id,
-
-        "class":
-            character.character_class,
-
-        "level":
-            character.level,
-
-        "power":
-            character.power,
-
-        "server":
-            character.server,
-
-        "nft_id":
-            character.nft_id,
-
-        "xdraco_url":
-            character.url,
-
-        "next_analysis": {
-
-            "eva":
-                True,
-
-            "crit_eva":
-                True,
-
-            "skill_damage_reduction":
-                True,
-
-            "pvp_damage_reduction":
-                True,
-
-            "all_damage_reduction":
-                True,
-
-            "spirit_decks":
-                "1-10",
-
-            "magic_stones":
-                "1-10",
-
-            "mystical_piece_decks":
-                "1-10"
-        }
-    }

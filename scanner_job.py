@@ -1,235 +1,185 @@
-import asyncio
-import json
-import os
-from datetime import datetime, timezone
-
-from xdraco_scanner import inspect_nft
-
-
 # ==========================================================
 # MIR4 NFT SCANNER
+# EXECUTOR DO DETECTOR XDRACO
 # ==========================================================
-# REGRAS PRINCIPAIS:
 #
-# CLASSE: ARBALISTA
-# POWER: 500.000 OU MENOS
-# FOCO: EVA >= 5.000
-# PRIORIDADE:
-#   1 - EVA
-#   2 - CRIT EVA
-#   3 - Skill DMG Reduction
-#   4 - PvP DMG Reduction
-#   5 - All DMG Reduction
+# Este arquivo é executado pelo GitHub Actions.
 #
-# IMPORTANTE:
-# Este arquivo executa a coleta.
-# A análise completa dos decks será adicionada
-# depois de validarmos a coleta real do XDRACO.
+# OBJETIVO ATUAL:
+# - Abrir um NFT real do XDRACO
+# - Usar Chromium/Playwright
+# - Detectar as requisições internas do site
+# - Descobrir de onde vêm os dados do personagem
+#
+# Depois vamos usar esses dados para:
+#
+# - Somente ARBALISTA
+# - Power máximo: 500.000
+# - EVA mínima desejada: 5.000+
+# - Prioridade máxima para EVA
+# - Prioridade alta para CRIT EVA
+# - Skill DMG Reduction
+# - PvP DMG Reduction
+# - All DMG Reduction
+# - Decks 1 até 10
+# - Spirits/Pets
+# - Tesouros dos Pets
+# - Magic Stones
+# - Atributos das pedras
+# - Mystical Pieces
+# - Atributos das peças
+# - Constitution
+# - Potential
+# - Conquest/Torres
+# - Skills
+# - Equipamentos
+# - Link direto do NFT
+#
 # ==========================================================
 
 
-MAX_POWER = 500_000
-MIN_EVA = 5_000
+import asyncio
+import sys
+import traceback
 
 
 # ==========================================================
-# IDs PARA TESTE
-# ==========================================================
-# Primeiro vamos testar poucos NFTs.
-# Depois substituiremos isto pela descoberta automática
-# dos NFTs disponíveis no marketplace.
+# IMPORTAR DETECTOR
 # ==========================================================
 
-TEST_TRADE_IDS = [
-    "2330341",
-]
+try:
+
+    from xdraco_detector import main as detector_main
+
+except Exception as error:
+
+    print("")
+    print("=" * 70)
+    print("ERRO AO IMPORTAR XDRACO DETECTOR")
+    print("=" * 70)
+    print("")
+
+    print(
+        "ERRO:",
+        str(error)
+    )
+
+    print("")
+    print("TRACEBACK:")
+    print("")
+
+    traceback.print_exc()
+
+    sys.exit(1)
 
 
 # ==========================================================
-# ANALISAR UM NFT
+# EXECUTAR
 # ==========================================================
 
-async def scan_one(trade_id):
+async def run():
 
-    print("=" * 60)
-    print(f"Analisando NFT: {trade_id}")
+    print("")
+    print("=" * 70)
+    print("            MIR4 NFT SCANNER")
+    print("=" * 70)
+    print("")
+
+    print("CONFIGURAÇÃO DA BUSCA:")
+    print("")
+
+    print(
+        "Classe...............: ARBALISTA"
+    )
+
+    print(
+        "Power máximo.........: 500.000"
+    )
+
+    print(
+        "EVA desejada.........: 5.000+"
+    )
+
+    print(
+        "Prioridade #1........: EVA"
+    )
+
+    print(
+        "Prioridade #2........: CRIT EVA"
+    )
+
+    print(
+        "Prioridade #3........: Skill DMG Reduction"
+    )
+
+    print(
+        "Prioridade #4........: PvP DMG Reduction"
+    )
+
+    print(
+        "Prioridade #5........: All DMG Reduction"
+    )
+
+    print("")
+    print(
+        "Modo atual...........: DETECTOR XDRACO"
+    )
+
+    print("")
+    print("=" * 70)
+    print("INICIANDO DETECTOR...")
+    print("=" * 70)
+    print("")
 
     try:
 
-        result = await inspect_nft(trade_id)
-
-        if not result:
-            print("Nenhum resultado.")
-            return None
-
-        if not result.get(
-            "approved_basic_filter",
-            False
-        ):
-            print(
-                "NFT eliminado pelo filtro inicial."
-            )
-
-            return None
-
-        power = result.get(
-            "power",
-            0
-        )
-
-        if power > MAX_POWER:
-
-            print(
-                f"ELIMINADO: Power {power} "
-                f"acima de {MAX_POWER}"
-            )
-
-            return None
-
-        print(
-            f"APROVADO NO FILTRO INICIAL: "
-            f"{power} Power"
-        )
-
-        return result
+        await detector_main()
 
     except Exception as error:
 
+        print("")
+        print("=" * 70)
+        print("ERRO DURANTE A EXECUÇÃO")
+        print("=" * 70)
+        print("")
+
         print(
-            f"ERRO NO NFT {trade_id}: "
-            f"{error}"
+            "ERRO:",
+            str(error)
         )
 
-        return None
+        print("")
+        print("TRACEBACK:")
+        print("")
+
+        traceback.print_exc()
+
+        sys.exit(1)
+
+    print("")
+    print("=" * 70)
+    print("DETECTOR FINALIZADO")
+    print("=" * 70)
+    print("")
 
 
 # ==========================================================
-# EXECUTAR SCANNER
-# ==========================================================
-
-async def main():
-
-    print("")
-    print("==========================================")
-    print("       MIR4 NFT SCANNER INICIADO")
-    print("==========================================")
-    print("")
-
-    print(
-        "Classe procurada: ARBALISTA"
-    )
-
-    print(
-        "Power máximo: 500.000"
-    )
-
-    print(
-        "EVA desejada: 5.000+"
-    )
-
-    print("")
-
-    results = []
-
-    for trade_id in TEST_TRADE_IDS:
-
-        result = await scan_one(
-            trade_id
-        )
-
-        if result:
-            results.append(result)
-
-        # Pequeno intervalo entre requisições
-        await asyncio.sleep(2)
-
-    # ======================================================
-    # CRIAR PASTA DO SITE
-    # ======================================================
-
-    os.makedirs(
-        "docs",
-        exist_ok=True
-    )
-
-    # ======================================================
-    # ARQUIVO FINAL
-    # ======================================================
-
-    output = {
-
-        "scanner":
-            "MIR4 NFT Scanner",
-
-        "updated_at":
-            datetime.now(
-                timezone.utc
-            ).isoformat(),
-
-        "rules": {
-
-            "class":
-                "Arbalista",
-
-            "max_power":
-                MAX_POWER,
-
-            "minimum_target_eva":
-                MIN_EVA,
-
-            "priority": [
-                "EVA",
-                "CRIT EVA",
-                "Skill DMG Reduction",
-                "PvP DMG Reduction",
-                "All DMG Reduction"
-            ]
-        },
-
-        "total_found":
-            len(results),
-
-        "results":
-            results
-    }
-
-    # ======================================================
-    # SALVAR JSON
-    # ======================================================
-
-    with open(
-        "docs/results.json",
-        "w",
-        encoding="utf-8"
-    ) as file:
-
-        json.dump(
-            output,
-            file,
-            ensure_ascii=False,
-            indent=2
-        )
-
-    print("")
-    print("==========================================")
-    print(
-        f"SCANNER FINALIZADO - "
-        f"{len(results)} resultado(s)"
-    )
-    print("==========================================")
-    print("")
-
-    print(
-        "Arquivo criado: docs/results.json"
-    )
-
-
-# ==========================================================
-# INICIAR
+# INÍCIO
 # ==========================================================
 
 if __name__ == "__main__":
 
-    asyncio.run(
-        main()
-    )
+    try:
+
+        asyncio.run(
+            run()
+        )
+
+    except KeyboardInterrupt:
+
+        print("")
+        print(
+            "Scanner interrompido."
+        )
+
+        sys.exit(0)

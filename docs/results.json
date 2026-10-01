@@ -1,0 +1,18 @@
+{
+  "scanner": "MIR4 NFT Scanner",
+  "updated_at": "2026-10-01T16:16:43.448473+00:00",
+  "rules": {
+    "class": "Arbalista",
+    "max_power": 500000,
+    "minimum_target_eva": 5000,
+    "priority": [
+      "EVA",
+      "CRIT EVA",
+      "Skill DMG Reduction",
+      "PvP DMG Reduction",
+      "All DMG Reduction"
+    ]
+  },
+  "total_found": 0,
+  "results": []
+}

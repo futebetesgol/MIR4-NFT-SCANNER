@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MIR4 NFT Scanner</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #070b12;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+    background: #0d1420;
+    border-bottom: 1px solid #1d2a3a;
+    padding: 25px;
+}
+
+.header-content {
+    max-width: 1400px;
+    margin: auto;
+}
+
+h1 {
+    margin: 0;
+    color: #46e88c;
+    font-size: 32px;
+}
+
+.subtitle {
+    margin-top: 8px;
+    color: #9eabbc;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+    gap: 15px;
+
+    background: #0d1420;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #1d2a3a;
+}
+
+.filter-box {
+    background: #111b29;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.label {
+    color: #8c9bad;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.value {
+    margin-top: 6px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.green {
+    color: #46e88c;
+}
+
+.blue {
+    color: #55b8ff;
+}
+
+.yellow {
+    color: #ffd35a;
+}
+
+.status {
+    margin-top: 25px;
+    padding: 15px;
+    background: #0d1420;
+    border-radius: 10px;
+    border: 1px solid #1d2a3a;
+}
+
+.results-title {
+    margin-top: 35px;
+    font-size: 25px;
+}
+
+#results {
+    margin-top: 20px;
+}
+
+.card {
+    background: #0d1420;
+    border: 1px solid #1d2a3a;
+    border-radius: 12px;
+    margin-bottom: 18px;
+    overflow: hidden;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px;
+    background: #111b29;
+}
+
+.character {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.score {
+    background: #183c2b;
+    color: #54ed96;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+    gap: 12px;
+}
+
+.stat {
+    background: #111b29;
+    padding: 14px;
+    border-radius: 8px;
+}
+
+.stat-name {
+    color: #8797aa;
+    font-size: 12px;
+}
+
+.stat-number {
+    margin-top: 5px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.eva {
+    color: #4dff9a;
+}
+
+.crit {
+    color: #63c8ff;
+}
+
+.reduction {
+    color: #ffd65c;
+}
+
+.actions {
+    margin-top: 20px;
+}
+
+.btn {
+    display: inline-block;
+    background: #35d77e;
+    color: #06110b;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 12px 20px;
+    border-radius: 7px;
+}
+
+.btn:hover {
+    background: #5aeb9b;
+}
+
+.empty {
+    background: #0d1420;
+    border: 1px solid #1d2a3a;
+    padding: 35px;
+    text-align: center;
+    border-radius: 12px;
+    color: #9ba9ba;
+}
+
+.updated {
+    color: #7f8c9e;
+    margin-top: 8px;
+    font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="header-content">
+
+<h1>⚔ MIR4 NFT SCANNER</h1>
+
+<div class="subtitle">
+Scanner inteligente de Arbalistas — foco em EVA e resistência PvP
+</div>
+
+</div>
+
+</header>
+
+
+<div class="container">
+
+<div class="filters">
+
+<div class="filter-box">
+<div class="label">Classe</div>
+<div class="value green">
+ARBALISTA
+</div>
+</div>
+
+<div class="filter-box">
+<div class="label">Power máximo</div>
+<div class="value">
+500.000
+</div>
+</div>
+
+<div class="filter-box">
+<div class="label">EVA mínima</div>
+<div class="value green">
+5.000+
+</div>
+</div>
+
+<div class="filter-box">
+<div class="label">Prioridade</div>
+<div class="value blue">
+EVA
+</div>
+</div>
+
+<div class="filter-box">
+<div class="label">Prioridade #2</div>
+<div class="value blue">
+CRIT EVA
+</div>
+</div>
+
+</div>
+
+
+<div class="status">
+
+<strong>🤖 Status do robô:</strong>
+
+<span class="green">
+ONLINE
+</span>
+
+<div class="updated" id="updated">
+Carregando última atualização...
+</div>
+
+</div>
+
+
+<div class="results-title">
+
+🔥 MELHORES NFTs ENCONTRADOS
+
+</div>
+
+
+<div id="results">
+
+<div class="empty">
+Carregando resultados do scanner...
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+async function loadResults() {
+
+    const container =
+        document.getElementById("results");
+
+    try {
+
+        const response =
+            await fetch(
+                "results.json?t=" +
+                Date.now()
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                "results.json não encontrado"
+            );
+        }
+
+        const data =
+            await response.json();
+
+        if (data.updated_at) {
+
+            document.getElementById(
+                "updated"
+            ).innerText =
+                "Última atualização: " +
+                new Date(
+                    data.updated_at
+                ).toLocaleString(
+                    "pt-BR"
+                );
+        }
+
+        const results =
+            data.results || [];
+
+        if (
+            results.length === 0
+        ) {
+
+            container.innerHTML = `
+
+            <div class="empty">
+
+            <h2>Nenhum NFT aprovado ainda</h2>
+
+            <p>
+            O robô está funcionando.
+            Estamos conectando agora os atributos
+            reais fornecidos pela API do MIR4.
+            </p>
+
+            <p>
+            Critérios:
+            Arbalista • Power ≤ 500.000 •
+            EVA ≥ 5.000
+            </p>
+
+            </div>
+
+            `;
+
+            return;
+        }
+
+        container.innerHTML = "";
+
+        results.forEach(
+            nft => {
+
+            const eva =
+                nft.eva ?? "-";
+
+            const critEva =
+                nft.crit_eva ?? "-";
+
+            const skillReduction =
+                nft.skill_damage_reduction ?? "-";
+
+            const pvpReduction =
+                nft.pvp_damage_reduction ?? "-";
+
+            const allReduction =
+                nft.all_damage_reduction ?? "-";
+
+            const power =
+                nft.power ?? "-";
+
+            const name =
+                nft.name ||
+                nft.character_name ||
+                "Arbalista";
+
+            const url =
+                nft.xdraco_url || "#";
+
+            const score =
+                nft.score ?? "-";
+
+            container.innerHTML += `
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div class="character">
+                        🏹 ${name}
+                    </div>
+
+                    <div class="score">
+                        SCORE ${score}
+                    </div>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="stats">
+
+                        <div class="stat">
+                            <div class="stat-name">
+                                POWER
+                            </div>
+
+                            <div class="stat-number">
+                                ${power}
+                            </div>
+                        </div>
+
+
+                        <div class="stat">
+                            <div class="stat-name">
+                                EVA
+                            </div>
+
+                            <div class="stat-number eva">
+                                ${eva}
+                            </div>
+                        </div>
+
+
+                        <div class="stat">
+                            <div class="stat-name">
+                                CRIT EVA
+                            </div>
+
+                            <div class="stat-number crit">
+                                ${critEva}
+                            </div>
+                        </div>
+
+
+                        <div class="stat">
+                            <div class="stat-name">
+                                REDUÇÃO DANO HABILIDADE
+                            </div>
+
+                            <div class="stat-number reduction">
+                                ${skillReduction}
+                            </div>
+                        </div>
+
+
+                        <div class="stat">
+                            <div class="stat-name">
+                                REDUÇÃO PvP
+                            </div>
+
+                            <div class="stat-number reduction">
+                                ${pvpReduction}
+                            </div>
+                        </div>
+
+
+                        <div class="stat">
+                            <div class="stat-name">
+                                REDUÇÃO TODO DANO
+                            </div>
+
+                            <div class="stat-number reduction">
+                                ${allReduction}
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="actions">
+
+                        <a
+                        class="btn"
+                        href="${url}"
+                        target="_blank"
+                        rel="noopener">
+
+                        ABRIR NFT NO XDRACO
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            `;
+
+        });
+
+    }
+
+    catch(error) {
+
+        container.innerHTML = `
+
+        <div class="empty">
+
+        <h2>Scanner sendo preparado</h2>
+
+        <p>
+        Ainda não foi possível carregar
+        results.json.
+        </p>
+
+        </div>
+
+        `;
+
+        console.error(
+            error
+        );
+    }
+}
+
+
+loadResults();
+
+
+setInterval(
+    loadResults,
+    60000
+);
+
+</script>
+
+</body>
+</html>

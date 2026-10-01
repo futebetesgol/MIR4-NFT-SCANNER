@@ -1,7 +1,5 @@
 import asyncio
 import json
-from urllib.parse import urlparse
-
 from playwright.async_api import async_playwright
 
 
@@ -21,6 +19,7 @@ async def main():
     print("")
 
     captured = []
+    character_summary = None
 
     async with async_playwright() as p:
 
@@ -56,10 +55,11 @@ async def main():
 
         async def handle_response(response):
 
+            nonlocal character_summary
+
             try:
 
                 request = response.request
-
                 resource_type = request.resource_type
 
                 content_type = (
@@ -82,15 +82,6 @@ async def main():
                 if not interesting:
                     return
 
-                item = {
-                    "status": response.status,
-                    "type": resource_type,
-                    "content_type": content_type,
-                    "url": url,
-                }
-
-                captured.append(item)
-
                 print("")
                 print("------------------------------------------")
                 print("RESPOSTA ENCONTRADA")
@@ -100,72 +91,126 @@ async def main():
                 print("CONTENT-TYPE:", content_type)
                 print("URL:", url)
 
-                # Tentar ler resposta
                 try:
-
                     body = await response.text()
-
                 except Exception:
-
                     body = ""
 
-                print(
-                    "TAMANHO:",
-                    len(body)
-                )
+                print("TAMANHO:", len(body))
 
-                if not body:
-                    return
+                parsed_body = None
 
-                lower = body.lower()
+                if body:
+                    try:
+                        parsed_body = json.loads(body)
+                    except Exception:
+                        parsed_body = None
 
-                keywords = [
-                    "power",
-                    "character",
-                    "arbalist",
-                    "spirit",
-                    "stone",
-                    "mystical",
-                    "deck",
-                    "evasion",
-                    "crit",
-                    "nft",
-                ]
+                item = {
+                    "status": response.status,
+                    "type": resource_type,
+                    "content_type": content_type,
+                    "url": url,
+                }
 
-                found_keywords = []
+                # Salvar resposta JSON quando existir
+                if parsed_body is not None:
+                    item["response"] = parsed_body
 
-                for keyword in keywords:
+                captured.append(item)
 
-                    if keyword in lower:
+                # ==================================================
+                # CAPTURAR CHARACTER SUMMARY
+                # ==================================================
 
-                        found_keywords.append(
-                            keyword
-                        )
-
-                if found_keywords:
-
-                    print(
-                        ">>> POSSÍVEL API IMPORTANTE <<<"
-                    )
-
-                    print(
-                        "PALAVRAS:",
-                        ", ".join(
-                            found_keywords
-                        )
-                    )
-
-                    # Mostrar apenas parte da resposta
-                    preview = (
-                        body[:3000]
-                        .replace("\n", " ")
-                        .replace("\r", " ")
-                    )
+                if "/nft/character/summary" in url:
 
                     print("")
-                    print("INÍCIO DA RESPOSTA:")
-                    print(preview)
+                    print("=" * 70)
+                    print(">>> CHARACTER SUMMARY ENCONTRADO <<<")
+                    print("=" * 70)
                     print("")
+
+                    if parsed_body is not None:
+
+                        character_summary = {
+                            "url": url,
+                            "status": response.status,
+                            "data": parsed_body,
+                        }
+
+                        print(
+                            json.dumps(
+                                parsed_body,
+                                ensure_ascii=False,
+                                indent=2
+                            )[:15000]
+                        )
+
+                    else:
+
+                        character_summary = {
+                            "url": url,
+                            "status": response.status,
+                            "raw": body,
+                        }
+
+                        print(body[:15000])
+
+                    print("")
+                    print("=" * 70)
+
+                # ==================================================
+                # DIAGNÓSTICO
+                # ==================================================
+
+                if body:
+
+                    lower = body.lower()
+
+                    keywords = [
+                        "power",
+                        "powerscore",
+                        "character",
+                        "arbalist",
+                        "spirit",
+                        "stone",
+                        "mystical",
+                        "deck",
+                        "evasion",
+                        "crit",
+                        "nft",
+                        "class",
+                        "level",
+                    ]
+
+                    found_keywords = []
+
+                    for keyword in keywords:
+
+                        if keyword in lower:
+                            found_keywords.append(keyword)
+
+                    if found_keywords:
+
+                        print("")
+                        print(">>> POSSÍVEL API IMPORTANTE <<<")
+
+                        print(
+                            "PALAVRAS:",
+                            ", ".join(found_keywords)
+                        )
+
+                        preview = (
+                            body[:3000]
+                            .replace("\n", " ")
+                            .replace("\r", " ")
+                        )
+
+                        print("")
+                        print("INÍCIO DA RESPOSTA:")
+                        print(preview)
+                        print("")
 
             except Exception as error:
 
@@ -201,14 +246,11 @@ async def main():
                 str(error)
             )
 
-        # Esperar chamadas JavaScript
         print(
             "Esperando o XDRACO carregar os dados..."
         )
 
-        await page.wait_for_timeout(
-            15000
-        )
+        await page.wait_for_timeout(15000)
 
         # ==================================================
         # INFORMAÇÕES DA PÁGINA
@@ -247,7 +289,6 @@ async def main():
             len(body_text)
         )
 
-        # Procurar palavras na página renderizada
         print("")
         print("PALAVRAS NA PÁGINA RENDERIZADA:")
 
@@ -273,7 +314,7 @@ async def main():
             )
 
         # ==================================================
-        # MOSTRAR PARTE DO TEXTO RENDERIZADO
+        # TEXTO DA PÁGINA
         # ==================================================
 
         if body_text:
@@ -288,7 +329,7 @@ async def main():
             )
 
         # ==================================================
-        # SALVAR TODAS AS URLs ENCONTRADAS
+        # REMOVER URLs DUPLICADAS
         # ==================================================
 
         print("")
@@ -299,10 +340,7 @@ async def main():
         unique = {}
 
         for item in captured:
-
-            unique[
-                item["url"]
-            ] = item
+            unique[item["url"]] = item
 
         for index, item in enumerate(
             unique.values(),
@@ -310,9 +348,7 @@ async def main():
         ):
 
             print("")
-            print(
-                f"[{index}]"
-            )
+            print(f"[{index}]")
 
             print(
                 "STATUS:",
@@ -330,7 +366,7 @@ async def main():
             )
 
         # ==================================================
-        # SALVAR JSON PARA ANALISARMOS
+        # SALVAR TODAS AS REQUISIÇÕES
         # ==================================================
 
         with open(
@@ -350,6 +386,44 @@ async def main():
         print(
             "Arquivo criado: xdraco_requests.json"
         )
+
+        # ==================================================
+        # SALVAR CHARACTER SUMMARY SEPARADAMENTE
+        # ==================================================
+
+        if character_summary is not None:
+
+            with open(
+                "character_summary.json",
+                "w",
+                encoding="utf-8"
+            ) as file:
+
+                json.dump(
+                    character_summary,
+                    file,
+                    ensure_ascii=False,
+                    indent=2,
+                )
+
+            print("")
+            print("=" * 70)
+            print("CHARACTER SUMMARY SALVO COM SUCESSO")
+            print("=" * 70)
+            print("")
+            print(
+                "Arquivo criado: character_summary.json"
+            )
+
+        else:
+
+            print("")
+            print("=" * 70)
+            print("ATENÇÃO")
+            print("=" * 70)
+            print(
+                "A API character/summary não foi capturada."
+            )
 
         print("")
         print("=" * 70)

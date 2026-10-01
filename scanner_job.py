@@ -53,6 +53,9 @@ async def run_detector():
     print("")
 
     captured = []
+    character_summary = None
+    character_inventory = None
+    character_tradehistory = None
 
     async with async_playwright() as playwright:
 
@@ -70,14 +73,11 @@ async def run_detector():
         )
 
         context = await browser.new_context(
-
             viewport={
                 "width": 1920,
                 "height": 1080,
             },
-
             locale="en-US",
-
             user_agent=(
                 "Mozilla/5.0 "
                 "(Windows NT 10.0; Win64; x64) "
@@ -90,19 +90,19 @@ async def run_detector():
         page = await context.new_page()
 
         # ==================================================
-        # CAPTURAR RESPOSTAS DA REDE
+        # CAPTURAR RESPOSTAS
         # ==================================================
 
         async def capture_response(response):
 
+            nonlocal character_summary
+            nonlocal character_inventory
+            nonlocal character_tradehistory
+
             try:
 
                 request = response.request
-
-                resource_type = (
-                    request.resource_type
-                )
-
+                resource_type = request.resource_type
                 url = response.url
 
                 content_type = (
@@ -112,188 +112,201 @@ async def run_detector():
                     ).lower()
                 )
 
-                # ------------------------------------------
-                # INTERESSA XHR / FETCH / JSON
-                # ------------------------------------------
-
                 interesting = (
-
-                    resource_type in [
-                        "xhr",
-                        "fetch",
-                    ]
-
-                    or
-
-                    "application/json"
-                    in content_type
-
-                    or
-
-                    "text/json"
-                    in content_type
+                    resource_type in ["xhr", "fetch"]
+                    or "application/json" in content_type
+                    or "text/json" in content_type
                 )
 
                 if not interesting:
                     return
-
-                item = {
-
-                    "status":
-                        response.status,
-
-                    "type":
-                        resource_type,
-
-                    "content_type":
-                        content_type,
-
-                    "url":
-                        url,
-                }
-
-                captured.append(item)
 
                 print("")
                 print("-" * 70)
                 print("RESPOSTA ENCONTRADA")
                 print("-" * 70)
 
-                print(
-                    "STATUS:",
-                    response.status
-                )
+                print("STATUS:", response.status)
+                print("TIPO:", resource_type)
+                print("URL:", url)
+                print("CONTENT-TYPE:", content_type)
 
-                print(
-                    "TIPO:",
-                    resource_type
-                )
-
-                print(
-                    "URL:",
-                    url
-                )
-
-                print(
-                    "CONTENT-TYPE:",
-                    content_type
-                )
-
-                # ------------------------------------------
-                # TENTAR LER O CORPO
-                # ------------------------------------------
+                # ==========================================
+                # LER CORPO DA RESPOSTA
+                # ==========================================
 
                 try:
-
                     body = await response.text()
-
-                except Exception:
-
+                except Exception as error:
+                    print(
+                        "Não foi possível ler o corpo:",
+                        str(error)
+                    )
                     body = ""
 
-                print(
-                    "TAMANHO:",
-                    len(body)
-                )
+                print("TAMANHO:", len(body))
 
-                if not body:
-                    return
+                parsed_body = None
 
-                body_lower = (
-                    body.lower()
-                )
+                if body:
 
-                # ------------------------------------------
-                # PALAVRAS QUE NOS INTERESSAM
-                # ------------------------------------------
+                    try:
+                        parsed_body = json.loads(body)
 
-                keywords = [
+                    except Exception:
+                        parsed_body = None
 
-                    "power",
+                # ==========================================
+                # SALVAR REQUISIÇÃO + CONTEÚDO
+                # ==========================================
 
-                    "powerscore",
+                item = {
+                    "status": response.status,
+                    "type": resource_type,
+                    "content_type": content_type,
+                    "url": url,
+                }
 
-                    "power_score",
+                if parsed_body is not None:
+                    item["response"] = parsed_body
 
-                    "character",
+                elif body:
+                    item["response_text"] = body[:20000]
 
-                    "arbalist",
+                captured.append(item)
 
-                    "spirit",
+                # ==========================================
+                # CHARACTER SUMMARY
+                # ==========================================
 
-                    "pet",
-
-                    "stone",
-
-                    "magicstone",
-
-                    "magic_stone",
-
-                    "mystical",
-
-                    "deck",
-
-                    "evasion",
-
-                    "eva",
-
-                    "crit",
-
-                    "nft",
-
-                    "trade",
-
-                    "constitution",
-
-                    "potential",
-
-                    "conquest",
-
-                    "codex",
-                ]
-
-                found = []
-
-                for keyword in keywords:
-
-                    if keyword in body_lower:
-
-                        found.append(
-                            keyword
-                        )
-
-                if found:
+                if "/nft/character/summary" in url:
 
                     print("")
-                    print(
-                        ">>> POSSÍVEL API IMPORTANTE <<<"
-                    )
+                    print("=" * 70)
+                    print("CHARACTER SUMMARY ENCONTRADO!")
+                    print("=" * 70)
 
-                    print(
-                        "PALAVRAS:",
-                        ", ".join(found)
-                    )
+                    character_summary = {
+                        "status": response.status,
+                        "url": url,
+                        "data": (
+                            parsed_body
+                            if parsed_body is not None
+                            else body
+                        ),
+                    }
+
+                    if parsed_body is not None:
+
+                        print(
+                            json.dumps(
+                                parsed_body,
+                                ensure_ascii=False,
+                                indent=2
+                            )[:20000]
+                        )
+
+                    else:
+                        print(body[:20000])
+
+                # ==========================================
+                # INVENTÁRIO
+                # ==========================================
+
+                if "/nft/character/inven" in url:
 
                     print("")
-                    print(
-                        "AMOSTRA DA RESPOSTA:"
-                    )
+                    print("=" * 70)
+                    print("INVENTÁRIO ENCONTRADO!")
+                    print("=" * 70)
 
-                    preview = (
-                        body[:5000]
-                        .replace(
-                            "\n",
-                            " "
-                        )
-                        .replace(
-                            "\r",
-                            " "
-                        )
-                    )
+                    character_inventory = {
+                        "status": response.status,
+                        "url": url,
+                        "data": (
+                            parsed_body
+                            if parsed_body is not None
+                            else body
+                        ),
+                    }
 
-                    print(
-                        preview
-                    )
+                # ==========================================
+                # TRADE HISTORY
+                # ==========================================
+
+                if "/nft/character/tradehistory" in url:
+
+                    character_tradehistory = {
+                        "status": response.status,
+                        "url": url,
+                        "data": (
+                            parsed_body
+                            if parsed_body is not None
+                            else body
+                        ),
+                    }
+
+                # ==========================================
+                # DIAGNÓSTICO
+                # ==========================================
+
+                if body:
+
+                    body_lower = body.lower()
+
+                    keywords = [
+                        "power",
+                        "powerscore",
+                        "power_score",
+                        "character",
+                        "arbalist",
+                        "spirit",
+                        "pet",
+                        "stone",
+                        "magicstone",
+                        "magic_stone",
+                        "mystical",
+                        "deck",
+                        "evasion",
+                        "eva",
+                        "crit",
+                        "nft",
+                        "trade",
+                        "constitution",
+                        "potential",
+                        "conquest",
+                        "codex",
+                    ]
+
+                    found = []
+
+                    for keyword in keywords:
+
+                        if keyword in body_lower:
+                            found.append(keyword)
+
+                    if found:
+
+                        print("")
+                        print(
+                            ">>> POSSÍVEL API IMPORTANTE <<<"
+                        )
+
+                        print(
+                            "PALAVRAS:",
+                            ", ".join(found)
+                        )
+
+                        print("")
+                        print("AMOSTRA DA RESPOSTA:")
+
+                        preview = (
+                            body[:5000]
+                            .replace("\n", " ")
+                            .replace("\r", " ")
+                        )
+
+                        print(preview)
 
             except Exception as error:
 
@@ -322,11 +335,8 @@ async def run_detector():
         try:
 
             response = await page.goto(
-
                 XDRACO_URL,
-
                 wait_until="domcontentloaded",
-
                 timeout=60000,
             )
 
@@ -353,12 +363,10 @@ async def run_detector():
             "Esperando JavaScript e APIs..."
         )
 
-        await page.wait_for_timeout(
-            20000
-        )
+        await page.wait_for_timeout(20000)
 
         # ==================================================
-        # DADOS DA PÁGINA RENDERIZADA
+        # PÁGINA RENDERIZADA
         # ==================================================
 
         print("")
@@ -372,21 +380,14 @@ async def run_detector():
         )
 
         try:
-
             title = await page.title()
-
         except Exception:
-
             title = ""
 
         print(
             "TÍTULO:",
             title
         )
-
-        # ==================================================
-        # PEGAR TEXTO
-        # ==================================================
 
         try:
 
@@ -397,68 +398,12 @@ async def run_detector():
             )
 
         except Exception:
-
             body_text = ""
 
         print(
             "TAMANHO DO TEXTO:",
             len(body_text)
         )
-
-        print("")
-        print(
-            "PALAVRAS ENCONTRADAS NA TELA:"
-        )
-
-        page_keywords = [
-
-            "Power",
-
-            "Arbalist",
-
-            "Spirit",
-
-            "Magic Stone",
-
-            "Mystical Piece",
-
-            "Evasion",
-
-            "EVA",
-
-            "NFT",
-        ]
-
-        for keyword in page_keywords:
-
-            exists = (
-
-                keyword.lower()
-
-                in
-
-                body_text.lower()
-            )
-
-            print(
-                f"{keyword}: "
-                f"{'SIM' if exists else 'NÃO'}"
-            )
-
-        # ==================================================
-        # MOSTRAR TEXTO DA TELA
-        # ==================================================
-
-        if body_text:
-
-            print("")
-            print("=" * 70)
-            print("AMOSTRA DO TEXTO DA PÁGINA")
-            print("=" * 70)
-
-            print(
-                body_text[:8000]
-            )
 
         # ==================================================
         # ORGANIZAR REQUISIÇÕES
@@ -467,17 +412,13 @@ async def run_detector():
         unique = {}
 
         for item in captured:
-
-            unique[
-                item["url"]
-            ] = item
+            unique[item["url"]] = item
 
         print("")
         print("=" * 70)
         print("REQUISIÇÕES XHR / FETCH / JSON")
         print("=" * 70)
 
-        print("")
         print(
             "TOTAL:",
             len(unique)
@@ -504,56 +445,52 @@ async def run_detector():
             )
 
             print(
-                "CONTENT-TYPE:",
-                item["content_type"]
-            )
-
-            print(
                 "URL:",
                 item["url"]
             )
 
+            if "response" in item:
+
+                print(
+                    "CONTEÚDO JSON: SIM"
+                )
+
+            else:
+
+                print(
+                    "CONTEÚDO JSON: NÃO"
+                )
+
         # ==================================================
-        # SALVAR RESULTADO
+        # SALVAR XDRACO_REQUESTS.JSON
         # ==================================================
 
         output = {
 
-            "trade_id":
-                TRADE_ID,
+            "trade_id": TRADE_ID,
 
-            "xdraco_url":
-                XDRACO_URL,
+            "xdraco_url": XDRACO_URL,
 
             "rules": {
 
-                "class":
-                    "Arbalista",
+                "class": "Arbalista",
 
-                "max_power":
-                    MAX_POWER,
+                "max_power": MAX_POWER,
 
-                "minimum_eva":
-                    MIN_EVA,
+                "minimum_eva": MIN_EVA,
 
                 "priority": [
-
                     "EVA",
-
                     "CRIT EVA",
-
                     "Skill DMG Reduction",
-
                     "PvP DMG Reduction",
-
                     "All DMG Reduction",
                 ],
             },
 
-            "requests":
-                list(
-                    unique.values()
-                ),
+            "requests": list(
+                unique.values()
+            ),
         }
 
         with open(
@@ -563,24 +500,101 @@ async def run_detector():
         ) as file:
 
             json.dump(
-
                 output,
-
                 file,
-
                 ensure_ascii=False,
-
                 indent=2,
             )
 
         print("")
+        print(
+            "ARQUIVO CRIADO: xdraco_requests.json"
+        )
+
+        # ==================================================
+        # SALVAR CHARACTER SUMMARY
+        # ==================================================
+
+        if character_summary is not None:
+
+            with open(
+                "character_summary.json",
+                "w",
+                encoding="utf-8"
+            ) as file:
+
+                json.dump(
+                    character_summary,
+                    file,
+                    ensure_ascii=False,
+                    indent=2,
+                )
+
+            print("")
+            print("=" * 70)
+            print("SUCESSO!")
+            print("character_summary.json CRIADO")
+            print("=" * 70)
+
+        else:
+
+            print("")
+            print("=" * 70)
+            print("ATENÇÃO!")
+            print(
+                "character/summary não foi capturado."
+            )
+            print("=" * 70)
+
+        # ==================================================
+        # SALVAR INVENTÁRIO
+        # ==================================================
+
+        if character_inventory is not None:
+
+            with open(
+                "character_inventory.json",
+                "w",
+                encoding="utf-8"
+            ) as file:
+
+                json.dump(
+                    character_inventory,
+                    file,
+                    ensure_ascii=False,
+                    indent=2,
+                )
+
+            print(
+                "character_inventory.json CRIADO"
+            )
+
+        # ==================================================
+        # SALVAR TRADE HISTORY
+        # ==================================================
+
+        if character_tradehistory is not None:
+
+            with open(
+                "character_tradehistory.json",
+                "w",
+                encoding="utf-8"
+            ) as file:
+
+                json.dump(
+                    character_tradehistory,
+                    file,
+                    ensure_ascii=False,
+                    indent=2,
+                )
+
+            print(
+                "character_tradehistory.json CRIADO"
+            )
+
+        print("")
         print("=" * 70)
-        print(
-            "ARQUIVO CRIADO:"
-        )
-        print(
-            "xdraco_requests.json"
-        )
+        print("CAPTURA FINALIZADA")
         print("=" * 70)
 
         await browser.close()

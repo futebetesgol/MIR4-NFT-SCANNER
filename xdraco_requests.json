@@ -69,18 +69,18 @@
       "url": "https://webapi.mir4global.com/wallet/prices/draco/lastest",
       "response": {
         "data": {
-          "CreatedDT": "2026-10-06 14:56:00",
-          "DracoPrice": "0.37794345049190703",
-          "DracoAmount": "4716",
-          "DracoPricePrev": "0.37794250049805894",
-          "DracoAmountPrev": "1881",
-          "USDWemixRate": "0.1913229109904088",
+          "CreatedDT": "2026-10-06 20:08:00",
+          "DracoPrice": "0.37746193050086407",
+          "DracoAmount": "4715",
+          "DracoPricePrev": "0.3735601681702988",
+          "DracoAmountPrev": "1862",
+          "USDWemixRate": "0.19156697747484649",
           "USDKLAYRate": "0.0",
           "USDWemixRatePrev": "0.19303601246005223",
           "USDDracoRate": "0.0723092411378711",
-          "DracoPriceWemix": "0.3779434504919070",
+          "DracoPriceWemix": "0.3774619305008641",
           "DracoPriceKlay": "0.0",
-          "USDDracoRatePrev": "0.0729565132353266"
+          "USDDracoRatePrev": "0.0721105652775010"
         }
       }
     },
@@ -91,18 +91,18 @@
       "url": "https://webapi.mir4global.com/wallet/prices/hydra/lastest",
       "response": {
         "data": {
-          "CreatedDT": "2026-10-06 14:56:00",
-          "HydraPrice": "9.2065033797386597",
-          "HydraAmount": "1376",
-          "HydraPricePrev": "9.1305826306314373",
-          "HydraAmountPrev": "1253",
-          "HydraUSDWemixRate": "0.1913229109904088",
+          "CreatedDT": "2026-10-06 20:08:00",
+          "HydraPrice": "9.2272853749036567",
+          "HydraAmount": "1384",
+          "HydraPricePrev": "9.0247113740758209",
+          "HydraAmountPrev": "1112",
+          "HydraUSDWemixRate": "0.19156697747484649",
           "HydraUSDKLAYRate": "0.0",
           "HydraUSDWemixRatePrev": "0.19303601246005223",
-          "USDHydraRate": "1.7614150266546373",
-          "HydraPriceWemix": "9.2065033797386597",
+          "USDHydraRate": "1.7676431695681494",
+          "HydraPriceWemix": "9.2272853749036567",
           "HydraPriceKlay": "0.0",
-          "USDHydraRatePrev": "1.7625312624541065"
+          "USDHydraRatePrev": "1.7420942972544753"
         }
       }
     },

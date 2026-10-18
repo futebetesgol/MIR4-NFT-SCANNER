@@ -69,18 +69,18 @@
       "url": "https://webapi.mir4global.com/wallet/prices/hydra/lastest",
       "response": {
         "data": {
-          "CreatedDT": "2026-10-18 05:36:00",
-          "HydraPrice": "9.9592998739779937",
-          "HydraAmount": "696",
-          "HydraPricePrev": "9.9437448063606428",
-          "HydraAmountPrev": "821",
-          "HydraUSDWemixRate": "0.18135410473133501",
+          "CreatedDT": "2026-10-18 10:43:00",
+          "HydraPrice": "10.004666370823383",
+          "HydraAmount": "652",
+          "HydraPricePrev": "9.9716833878107813",
+          "HydraAmountPrev": "935",
+          "HydraUSDWemixRate": "0.18067800043833757",
           "HydraUSDKLAYRate": "0.0",
           "HydraUSDWemixRatePrev": "0.18191887260621831",
-          "USDHydraRate": "1.8061599123961767",
-          "HydraPriceWemix": "9.9592998739779937",
+          "USDHydraRate": "1.8076231149330484",
+          "HydraPriceWemix": "10.0046663708233829",
           "HydraPriceKlay": "0.0",
-          "USDHydraRatePrev": "1.8089548446570667"
+          "USDHydraRatePrev": "1.8140373998966930"
         }
       }
     },
@@ -91,18 +91,18 @@
       "url": "https://webapi.mir4global.com/wallet/prices/draco/lastest",
       "response": {
         "data": {
-          "CreatedDT": "2026-10-18 05:36:00",
-          "DracoPrice": "0.39666400586377043",
-          "DracoAmount": "103",
-          "DracoPricePrev": "0.3953866693470256",
-          "DracoAmountPrev": "286",
-          "USDWemixRate": "0.18135410473133501",
+          "CreatedDT": "2026-10-18 10:43:00",
+          "DracoPrice": "0.39824024601081554",
+          "DracoAmount": "226",
+          "DracoPricePrev": "0.3964975730237556",
+          "DracoAmountPrev": "38",
+          "USDWemixRate": "0.18067800043833757",
           "USDKLAYRate": "0.0",
           "USDWemixRatePrev": "0.18191887260621831",
-          "USDDracoRate": "0.0719366456625691",
-          "DracoPriceWemix": "0.3966640058637704",
+          "USDDracoRate": "0.0719532513433058",
+          "DracoPriceWemix": "0.3982402460108155",
           "DracoPriceKlay": "0.0",
-          "USDDracoRatePrev": "0.0719282971311385"
+          "USDDracoRatePrev": "0.0721303914755833"
         }
       }
     },

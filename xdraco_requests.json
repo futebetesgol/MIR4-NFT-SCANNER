@@ -66,21 +66,21 @@
       "status": 200,
       "type": "xhr",
       "content_type": "application/json",
-      "url": "https://webapi.mir4global.com/wallet/prices/hydra/lastest",
+      "url": "https://webapi.mir4global.com/wallet/prices/draco/lastest",
       "response": {
         "data": {
-          "CreatedDT": "2026-10-24 01:25:00",
-          "HydraPrice": "10.382534277151954",
-          "HydraAmount": "1322",
-          "HydraPricePrev": "10.342781511442848",
-          "HydraAmountPrev": "9910",
-          "HydraUSDWemixRate": "0.1785568048583214",
-          "HydraUSDKLAYRate": "0.0",
-          "HydraUSDWemixRatePrev": "0.17986151740863573",
-          "USDHydraRate": "1.8538721468602546",
-          "HydraPriceWemix": "10.3825342771519544",
-          "HydraPriceKlay": "0.0",
-          "USDHydraRatePrev": "1.8602683768740935"
+          "CreatedDT": "2026-10-24 07:03:00",
+          "DracoPrice": "0.40820089328098513",
+          "DracoAmount": "834",
+          "DracoPricePrev": "0.40063654525198916",
+          "DracoAmountPrev": "30",
+          "USDWemixRate": "0.17669205402848218",
+          "USDKLAYRate": "0.0",
+          "USDWemixRatePrev": "0.17986151740863573",
+          "USDDracoRate": "0.0721258542900785",
+          "DracoPriceWemix": "0.4082008932809851",
+          "DracoPriceKlay": "0.0",
+          "USDDracoRatePrev": "0.0720590969583763"
         }
       }
     },
@@ -88,21 +88,21 @@
       "status": 200,
       "type": "xhr",
       "content_type": "application/json",
-      "url": "https://webapi.mir4global.com/wallet/prices/draco/lastest",
+      "url": "https://webapi.mir4global.com/wallet/prices/hydra/lastest",
       "response": {
         "data": {
-          "CreatedDT": "2026-10-24 01:25:00",
-          "DracoPrice": "0.40387163953693545",
-          "DracoAmount": "756",
-          "DracoPricePrev": "0.3998594537118903",
-          "DracoAmountPrev": "19",
-          "USDWemixRate": "0.1785568048583214",
-          "USDKLAYRate": "0.0",
-          "USDWemixRatePrev": "0.17986151740863573",
-          "USDDracoRate": "0.0721140295286069",
-          "DracoPriceWemix": "0.4038716395369354",
-          "DracoPriceKlay": "0.0",
-          "USDDracoRatePrev": "0.0719193280948087"
+          "CreatedDT": "2026-10-24 07:03:00",
+          "HydraPrice": "10.489435866468394",
+          "HydraAmount": "1381",
+          "HydraPricePrev": "10.362881794027198",
+          "HydraAmountPrev": "9888",
+          "HydraUSDWemixRate": "0.17669205402848218",
+          "HydraUSDKLAYRate": "0.0",
+          "HydraUSDWemixRatePrev": "0.17986151740863573",
+          "USDHydraRate": "1.8533999688463323",
+          "HydraPriceWemix": "10.4894358664683942",
+          "HydraPriceKlay": "0.0",
+          "USDHydraRatePrev": "1.8638836442000570"
         }
       }
     },
@@ -135,16 +135,6 @@
           "contractAddress": "0x1dbf9b33e59972ed753cae1423f4f23deec70cc9",
           "equipItem": []
         }
-      }
-    },
-    {
-      "status": 200,
-      "type": "xhr",
-      "content_type": "application/json",
-      "url": "https://webapi.mir4global.com/nft/character/inven?transportID=356191&languageCode=en",
-      "response": {
-        "code": 200,
-        "data": []
       }
     },
     {
@@ -194,6 +184,16 @@
           ],
           "avg": 1804
         }
+      }
+    },
+    {
+      "status": 200,
+      "type": "xhr",
+      "content_type": "application/json",
+      "url": "https://webapi.mir4global.com/nft/character/inven?transportID=356191&languageCode=en",
+      "response": {
+        "code": 200,
+        "data": []
       }
     }
   ]

@@ -18,7 +18,7 @@
       "status": 200,
       "type": "xhr",
       "content_type": "text/html",
-      "url": "https://file.mir4global.com/live_global/maintenance/date.json?_=1793400763874",
+      "url": "https://file.mir4global.com/live_global/maintenance/date.json?_=1793412615512",
       "response": {
         "sdate": "October 30 2026 18:00",
         "edate": "November 2 2026 18:00"
@@ -28,7 +28,7 @@
       "status": 302,
       "type": "xhr",
       "content_type": "text/html",
-      "url": "https://webapi.mir4global.com/ismaintenance?_=1793400763873"
+      "url": "https://webapi.mir4global.com/ismaintenance?_=1793412615511"
     },
     {
       "status": 200,

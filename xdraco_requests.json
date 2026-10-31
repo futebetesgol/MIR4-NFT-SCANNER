@@ -15,20 +15,20 @@
   },
   "requests": [
     {
-      "status": 200,
-      "type": "xhr",
-      "content_type": "text/html",
-      "url": "https://file.mir4global.com/live_global/maintenance/date.json?_=1793438816814",
-      "response": {
-        "sdate": "October 30 2026 18:00",
-        "edate": "November 2 2026 18:00"
-      }
-    },
-    {
       "status": 302,
       "type": "xhr",
       "content_type": "text/html",
-      "url": "https://webapi.mir4global.com/ismaintenance?_=1793438816813"
+      "url": "https://webapi.mir4global.com/ismaintenance?_=1793461202936"
+    },
+    {
+      "status": 200,
+      "type": "xhr",
+      "content_type": "text/html",
+      "url": "https://file.mir4global.com/live_global/maintenance/date.json?_=1793461202937",
+      "response": {
+        "sdate": "October 31 2026 19:00",
+        "edate": "October 31 2026 23:00"
+      }
     },
     {
       "status": 200,

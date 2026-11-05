@@ -66,29 +66,7 @@
       "status": 302,
       "type": "xhr",
       "content_type": "text/html",
-      "url": "https://webapi.mir4global.com/wallet/prices/hydra/lastest"
-    },
-    {
-      "status": 200,
-      "type": "xhr",
-      "content_type": "application/json",
-      "url": "https://webapi.mir4global.com/wallet/prices/draco/lastest",
-      "response": {
-        "data": {
-          "CreatedDT": "2026-11-05 18:37:00",
-          "DracoPrice": "0.53796833429163715",
-          "DracoAmount": "530",
-          "DracoPricePrev": "0.52402878068470171",
-          "DracoAmountPrev": "60",
-          "USDWemixRate": "0.13439799419233131",
-          "USDKLAYRate": "0.0",
-          "USDWemixRatePrev": "0.13620454020717954",
-          "USDDracoRate": "0.0723018650677856",
-          "DracoPriceWemix": "0.5379683342916372",
-          "DracoPriceKlay": "0.0",
-          "USDDracoRatePrev": "0.0713750991284887"
-        }
-      }
+      "url": "https://webapi.mir4global.com/wallet/prices/draco/lastest"
     },
     {
       "status": 200,
@@ -119,16 +97,6 @@
           "contractAddress": "0x1dbf9b33e59972ed753cae1423f4f23deec70cc9",
           "equipItem": []
         }
-      }
-    },
-    {
-      "status": 200,
-      "type": "xhr",
-      "content_type": "application/json",
-      "url": "https://webapi.mir4global.com/nft/character/inven?transportID=356191&languageCode=en",
-      "response": {
-        "code": 200,
-        "data": []
       }
     },
     {

@@ -63,10 +63,26 @@
       ]
     },
     {
-      "status": 302,
+      "status": 200,
       "type": "xhr",
-      "content_type": "text/html",
-      "url": "https://webapi.mir4global.com/wallet/prices/draco/lastest"
+      "content_type": "application/json",
+      "url": "https://webapi.mir4global.com/wallet/prices/draco/lastest",
+      "response": {
+        "data": {
+          "CreatedDT": "2026-11-06 06:25:00",
+          "DracoPrice": "0.54742553109615111",
+          "DracoAmount": "436",
+          "DracoPricePrev": "0.5319929309123187",
+          "DracoAmountPrev": "157",
+          "USDWemixRate": "0.13207731119481642",
+          "USDKLAYRate": "0.0",
+          "USDWemixRatePrev": "0.1323922515382786",
+          "USDDracoRate": "0.0723024922265740",
+          "DracoPriceWemix": "0.5474255310961511",
+          "DracoPriceKlay": "0.0",
+          "USDDracoRatePrev": "0.0704317419259298"
+        }
+      }
     },
     {
       "status": 200,

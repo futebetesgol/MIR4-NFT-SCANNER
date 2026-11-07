@@ -63,24 +63,30 @@
       ]
     },
     {
+      "status": 302,
+      "type": "xhr",
+      "content_type": "text/html",
+      "url": "https://webapi.mir4global.com/wallet/prices/hydra/lastest"
+    },
+    {
       "status": 200,
       "type": "xhr",
       "content_type": "application/json",
       "url": "https://webapi.mir4global.com/wallet/prices/draco/lastest",
       "response": {
         "data": {
-          "CreatedDT": "2026-11-06 20:46:00",
-          "DracoPrice": "0.5531173546941841",
-          "DracoAmount": "127",
-          "DracoPricePrev": "0.54669219331316254",
-          "DracoAmountPrev": "393",
-          "USDWemixRate": "0.13072649657013155",
+          "CreatedDT": "2026-11-07 00:46:00",
+          "DracoPrice": "0.55798158147266463",
+          "DracoAmount": "177",
+          "DracoPricePrev": "0.54938506796755926",
+          "DracoAmountPrev": "394",
+          "USDWemixRate": "0.12959191273317353",
           "USDKLAYRate": "0.0",
-          "USDWemixRatePrev": "0.1323922515382786",
-          "USDDracoRate": "0.0723070939713095",
-          "DracoPriceWemix": "0.5531173546941841",
+          "USDWemixRatePrev": "0.12980187304393101",
+          "USDDracoRate": "0.0723099004129237",
+          "DracoPriceWemix": "0.5579815814726646",
           "DracoPriceKlay": "0.0",
-          "USDDracoRatePrev": "0.0723778103711294"
+          "USDDracoRatePrev": "0.0713112108445565"
         }
       }
     },
@@ -112,6 +118,55 @@
           "tradeType": 2,
           "contractAddress": "0x1dbf9b33e59972ed753cae1423f4f23deec70cc9",
           "equipItem": []
+        }
+      }
+    },
+    {
+      "status": 200,
+      "type": "xhr",
+      "content_type": "application/json",
+      "url": "https://webapi.mir4global.com/nft/character/tradehistory?tokenID=92045&languageCode=en",
+      "response": {
+        "code": 200,
+        "data": {
+          "lists": [
+            {
+              "sellUserAddress": "0xa3830330f7ad0d011380c6bd4bec8ba4259169b9",
+              "tradeTS": 1781838362,
+              "price": 2200
+            },
+            {
+              "sellUserAddress": "0xf810d681d8d09f7bf75b63140afeda82af306f05",
+              "tradeTS": 1775163842,
+              "price": 2199
+            },
+            {
+              "sellUserAddress": "0xed61d8c03924d81e4a7b17e9eb3132069eea3489",
+              "tradeTS": 1774366262,
+              "price": 1999
+            },
+            {
+              "sellUserAddress": "0xa8553d6457da24eac6a815658c895145e5865698",
+              "tradeTS": 1773323822,
+              "price": 1950
+            },
+            {
+              "sellUserAddress": "0x0330255c61b0030a16914ca902598545ceb9360f",
+              "tradeTS": 1772332442,
+              "price": 1900
+            },
+            {
+              "sellUserAddress": "0xe04e2d40bfa1478cdf0339ead2842f35edc085df",
+              "tradeTS": 1761192902,
+              "price": 1080
+            },
+            {
+              "sellUserAddress": "0xe1f26aebb3868c67133b215b2e8d99a41b4f490c",
+              "tradeTS": 1740533102,
+              "price": 1300
+            }
+          ],
+          "avg": 1804
         }
       }
     },

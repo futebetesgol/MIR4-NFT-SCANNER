@@ -63,56 +63,47 @@
       ]
     },
     {
-      "status": 302,
-      "type": "xhr",
-      "content_type": "text/html",
-      "url": "https://webapi.mir4global.com/wallet/prices/draco/lastest"
-    },
-    {
       "status": 200,
       "type": "xhr",
       "content_type": "application/json",
-      "url": "https://webapi.mir4global.com/nft/character/summary?seq=2330341&languageCode=en",
+      "url": "https://webapi.mir4global.com/wallet/prices/draco/lastest",
       "response": {
-        "code": 200,
         "data": {
-          "character": {
-            "name": "TRADEitmsPVP",
-            "worldName": "ASIA334",
-            "transportID": "356191",
-            "class": "4",
-            "level": "156",
-            "powerScore": "440466",
-            "isNew": "1",
-            "MirageScore": 0,
-            "MiraX": 0,
-            "Reinforce": 0
-          },
-          "mintedTS": 1710758074,
-          "sealedTS": 1710758074,
-          "nftID": "92045",
-          "blockChain": "WEMIX",
-          "price": 2399,
-          "tradeType": 2,
-          "contractAddress": "0x1dbf9b33e59972ed753cae1423f4f23deec70cc9",
-          "equipItem": []
+          "CreatedDT": "2026-11-10 03:19:00",
+          "DracoPrice": "0.60962704675000934",
+          "DracoAmount": "162",
+          "DracoPricePrev": "0.61660068883018238",
+          "DracoAmountPrev": "498",
+          "USDWemixRate": "0.11880219633313355",
+          "USDKLAYRate": "0.0",
+          "USDWemixRatePrev": "0.11845641040904159",
+          "USDDracoRate": "0.0724250320979830",
+          "DracoPriceWemix": "0.6096270467500093",
+          "DracoPriceKlay": "0.0",
+          "USDDracoRatePrev": "0.0730403042545658"
         }
       }
     },
     {
-      "status": 302,
-      "type": "xhr",
-      "content_type": "text/html",
-      "url": "https://webapi.mir4global.com/nft/character/tradehistory?tokenID=92045&languageCode=en"
-    },
-    {
       "status": 200,
       "type": "xhr",
       "content_type": "application/json",
-      "url": "https://webapi.mir4global.com/nft/character/inven?transportID=356191&languageCode=en",
+      "url": "https://webapi.mir4global.com/wallet/prices/hydra/lastest",
       "response": {
-        "code": 200,
-        "data": []
+        "data": {
+          "CreatedDT": "2026-11-10 03:19:00",
+          "HydraPrice": "14.771228304145868",
+          "HydraAmount": "2095",
+          "HydraPricePrev": "14.928240622542727",
+          "HydraAmountPrev": "7626",
+          "HydraUSDWemixRate": "0.11880219633313355",
+          "HydraUSDKLAYRate": "0.0",
+          "HydraUSDWemixRatePrev": "0.11845641040904159",
+          "USDHydraRate": "1.7548543650706767",
+          "HydraPriceWemix": "14.7712283041458683",
+          "HydraPriceKlay": "0.0",
+          "USDHydraRatePrev": "1.7683457978688479"
+        }
       }
     }
   ]

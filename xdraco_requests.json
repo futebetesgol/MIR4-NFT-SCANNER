@@ -63,10 +63,26 @@
       ]
     },
     {
-      "status": 302,
+      "status": 200,
       "type": "xhr",
-      "content_type": "text/html",
-      "url": "https://webapi.mir4global.com/wallet/prices/hydra/lastest"
+      "content_type": "application/json",
+      "url": "https://webapi.mir4global.com/wallet/prices/hydra/lastest",
+      "response": {
+        "data": {
+          "CreatedDT": "2026-11-11 01:08:00",
+          "HydraPrice": "14.355943610436672",
+          "HydraAmount": "1576",
+          "HydraPricePrev": "14.273649486049351",
+          "HydraAmountPrev": "2191",
+          "HydraUSDWemixRate": "0.118254066040945",
+          "HydraUSDKLAYRate": "0.0",
+          "HydraUSDWemixRatePrev": "0.11890202230339798",
+          "USDHydraRate": "1.6976487037886605",
+          "HydraPriceWemix": "14.3559436104366718",
+          "HydraPriceKlay": "0.0",
+          "USDHydraRatePrev": "1.6971657895411252"
+        }
+      }
     },
     {
       "status": 200,
@@ -100,12 +116,6 @@
       }
     },
     {
-      "status": 302,
-      "type": "xhr",
-      "content_type": "text/html",
-      "url": "https://webapi.mir4global.com/nft/character/tradehistory?tokenID=92045&languageCode=en"
-    },
-    {
       "status": 200,
       "type": "xhr",
       "content_type": "application/json",
@@ -113,6 +123,55 @@
       "response": {
         "code": 200,
         "data": []
+      }
+    },
+    {
+      "status": 200,
+      "type": "xhr",
+      "content_type": "application/json",
+      "url": "https://webapi.mir4global.com/nft/character/tradehistory?tokenID=92045&languageCode=en",
+      "response": {
+        "code": 200,
+        "data": {
+          "lists": [
+            {
+              "sellUserAddress": "0xa3830330f7ad0d011380c6bd4bec8ba4259169b9",
+              "tradeTS": 1781838362,
+              "price": 2200
+            },
+            {
+              "sellUserAddress": "0xf810d681d8d09f7bf75b63140afeda82af306f05",
+              "tradeTS": 1775163842,
+              "price": 2199
+            },
+            {
+              "sellUserAddress": "0xed61d8c03924d81e4a7b17e9eb3132069eea3489",
+              "tradeTS": 1774366262,
+              "price": 1999
+            },
+            {
+              "sellUserAddress": "0xa8553d6457da24eac6a815658c895145e5865698",
+              "tradeTS": 1773323822,
+              "price": 1950
+            },
+            {
+              "sellUserAddress": "0x0330255c61b0030a16914ca902598545ceb9360f",
+              "tradeTS": 1772332442,
+              "price": 1900
+            },
+            {
+              "sellUserAddress": "0xe04e2d40bfa1478cdf0339ead2842f35edc085df",
+              "tradeTS": 1761192902,
+              "price": 1080
+            },
+            {
+              "sellUserAddress": "0xe1f26aebb3868c67133b215b2e8d99a41b4f490c",
+              "tradeTS": 1740533102,
+              "price": 1300
+            }
+          ],
+          "avg": 1804
+        }
       }
     }
   ]

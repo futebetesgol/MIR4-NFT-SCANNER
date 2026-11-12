@@ -75,18 +75,18 @@
       "url": "https://webapi.mir4global.com/wallet/prices/hydra/lastest",
       "response": {
         "data": {
-          "CreatedDT": "2026-11-12 00:20:00",
-          "HydraPrice": "14.489794147665021",
-          "HydraAmount": "327",
-          "HydraPricePrev": "14.314911442050629",
-          "HydraAmountPrev": "1576",
-          "HydraUSDWemixRate": "0.11650713117300539",
+          "CreatedDT": "2026-11-12 08:04:00",
+          "HydraPrice": "14.610431013131643",
+          "HydraAmount": "386",
+          "HydraPricePrev": "14.38959761121234",
+          "HydraAmountPrev": "1537",
+          "HydraUSDWemixRate": "0.11572531445086238",
           "HydraUSDKLAYRate": "0.0",
           "HydraUSDWemixRatePrev": "0.11660818172975043",
-          "USDHydraRate": "1.6881643474318544",
-          "HydraPriceWemix": "14.4897941476650214",
+          "USDHydraRate": "1.6907967232572914",
+          "HydraPriceWemix": "14.6104310131316435",
           "HydraPriceKlay": "0.0",
-          "USDHydraRatePrev": "1.6692357948799237"
+          "USDHydraRatePrev": "1.6779448132662311"
         }
       }
     },

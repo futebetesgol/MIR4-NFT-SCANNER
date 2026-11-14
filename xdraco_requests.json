@@ -63,24 +63,39 @@
       ]
     },
     {
+      "status": 302,
+      "type": "xhr",
+      "content_type": "text/html",
+      "url": "https://webapi.mir4global.com/wallet/prices/draco/lastest"
+    },
+    {
       "status": 200,
       "type": "xhr",
       "content_type": "application/json",
-      "url": "https://webapi.mir4global.com/wallet/prices/hydra/lastest",
+      "url": "https://webapi.mir4global.com/nft/character/summary?seq=2330341&languageCode=en",
       "response": {
+        "code": 200,
         "data": {
-          "CreatedDT": "2026-11-14 02:06:00",
-          "HydraPrice": "14.27923546571539",
-          "HydraAmount": "1750",
-          "HydraPricePrev": "14.657327745638414",
-          "HydraAmountPrev": "592",
-          "HydraUSDWemixRate": "0.120622977240426",
-          "HydraUSDKLAYRate": "0.0",
-          "HydraUSDWemixRatePrev": "0.11799222140944338",
-          "USDHydraRate": "1.7224038945916713",
-          "HydraPriceWemix": "14.2792354657153897",
-          "HydraPriceKlay": "0.0",
-          "USDHydraRatePrev": "1.7294506606341453"
+          "character": {
+            "name": "TRADEitmsPVP",
+            "worldName": "ASIA334",
+            "transportID": "356191",
+            "class": "4",
+            "level": "156",
+            "powerScore": "440466",
+            "isNew": "1",
+            "MirageScore": 0,
+            "MiraX": 0,
+            "Reinforce": 0
+          },
+          "mintedTS": 1710758074,
+          "sealedTS": 1710758074,
+          "nftID": "92045",
+          "blockChain": "WEMIX",
+          "price": 2399,
+          "tradeType": 2,
+          "contractAddress": "0x1dbf9b33e59972ed753cae1423f4f23deec70cc9",
+          "equipItem": []
         }
       }
     },
@@ -88,22 +103,10 @@
       "status": 200,
       "type": "xhr",
       "content_type": "application/json",
-      "url": "https://webapi.mir4global.com/wallet/prices/draco/lastest",
+      "url": "https://webapi.mir4global.com/nft/character/inven?transportID=356191&languageCode=en",
       "response": {
-        "data": {
-          "CreatedDT": "2026-11-14 02:06:00",
-          "DracoPrice": "0.600663797810287",
-          "DracoAmount": "83",
-          "DracoPricePrev": "0.61549458815987013",
-          "DracoAmountPrev": "1",
-          "USDWemixRate": "0.120622977240426",
-          "USDKLAYRate": "0.0",
-          "USDWemixRatePrev": "0.11799222140944338",
-          "USDDracoRate": "0.0724538556124181",
-          "DracoPriceWemix": "0.6006637978102870",
-          "DracoPriceKlay": "0.0",
-          "USDDracoRatePrev": "0.0726235737224736"
-        }
+        "code": 200,
+        "data": []
       }
     }
   ]

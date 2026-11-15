@@ -63,47 +63,56 @@
       ]
     },
     {
-      "status": 200,
+      "status": 302,
       "type": "xhr",
-      "content_type": "application/json",
-      "url": "https://webapi.mir4global.com/wallet/prices/draco/lastest",
-      "response": {
-        "data": {
-          "CreatedDT": "2026-11-15 09:00:00",
-          "DracoPrice": "0.57439282475303088",
-          "DracoAmount": "20049",
-          "DracoPricePrev": "0.57207121880953282",
-          "DracoAmountPrev": "163",
-          "USDWemixRate": "0.12166641428268787",
-          "USDKLAYRate": "0.0",
-          "USDWemixRatePrev": "0.11954028940759745",
-          "USDDracoRate": "0.0698843153774056",
-          "DracoPriceWemix": "0.5743928247530309",
-          "DracoPriceKlay": "0.0",
-          "USDDracoRatePrev": "0.0683855590582486"
-        }
-      }
+      "content_type": "text/html",
+      "url": "https://webapi.mir4global.com/wallet/prices/hydra/lastest"
     },
     {
       "status": 200,
       "type": "xhr",
       "content_type": "application/json",
-      "url": "https://webapi.mir4global.com/wallet/prices/hydra/lastest",
+      "url": "https://webapi.mir4global.com/nft/character/summary?seq=2330341&languageCode=en",
       "response": {
+        "code": 200,
         "data": {
-          "CreatedDT": "2026-11-15 09:00:00",
-          "HydraPrice": "14.083065196436598",
-          "HydraAmount": "331",
-          "HydraPricePrev": "14.036683027209007",
-          "HydraAmountPrev": "707",
-          "HydraUSDWemixRate": "0.12166641428268787",
-          "HydraUSDKLAYRate": "0.0",
-          "HydraUSDWemixRatePrev": "0.11954028940759745",
-          "USDHydraRate": "1.7134360445597583",
-          "HydraPriceWemix": "14.0830651964365980",
-          "HydraPriceKlay": "0.0",
-          "USDHydraRatePrev": "1.6779491513952758"
+          "character": {
+            "name": "TRADEitmsPVP",
+            "worldName": "ASIA334",
+            "transportID": "356191",
+            "class": "4",
+            "level": "156",
+            "powerScore": "440466",
+            "isNew": "1",
+            "MirageScore": 0,
+            "MiraX": 0,
+            "Reinforce": 0
+          },
+          "mintedTS": 1710758074,
+          "sealedTS": 1710758074,
+          "nftID": "92045",
+          "blockChain": "WEMIX",
+          "price": 2399,
+          "tradeType": 2,
+          "contractAddress": "0x1dbf9b33e59972ed753cae1423f4f23deec70cc9",
+          "equipItem": []
         }
+      }
+    },
+    {
+      "status": 302,
+      "type": "xhr",
+      "content_type": "text/html",
+      "url": "https://webapi.mir4global.com/nft/character/tradehistory?tokenID=92045&languageCode=en"
+    },
+    {
+      "status": 200,
+      "type": "xhr",
+      "content_type": "application/json",
+      "url": "https://webapi.mir4global.com/nft/character/inven?transportID=356191&languageCode=en",
+      "response": {
+        "code": 200,
+        "data": []
       }
     }
   ]

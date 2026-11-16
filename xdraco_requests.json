@@ -72,6 +72,28 @@
       "status": 200,
       "type": "xhr",
       "content_type": "application/json",
+      "url": "https://webapi.mir4global.com/wallet/prices/hydra/lastest",
+      "response": {
+        "data": {
+          "CreatedDT": "2026-11-16 09:17:00",
+          "HydraPrice": "13.632160000745806",
+          "HydraAmount": "1416",
+          "HydraPricePrev": "13.770553795157619",
+          "HydraAmountPrev": "331",
+          "HydraUSDWemixRate": "0.12257434808021904",
+          "HydraUSDKLAYRate": "0.0",
+          "HydraUSDWemixRatePrev": "0.12405105206114904",
+          "USDHydraRate": "1.6709531250166554",
+          "HydraPriceWemix": "13.6321600007458059",
+          "HydraPriceKlay": "0.0",
+          "USDHydraRatePrev": "1.7082516857539514"
+        }
+      }
+    },
+    {
+      "status": 200,
+      "type": "xhr",
+      "content_type": "application/json",
       "url": "https://webapi.mir4global.com/nft/character/summary?seq=2330341&languageCode=en",
       "response": {
         "code": 200,
@@ -97,6 +119,16 @@
           "contractAddress": "0x1dbf9b33e59972ed753cae1423f4f23deec70cc9",
           "equipItem": []
         }
+      }
+    },
+    {
+      "status": 200,
+      "type": "xhr",
+      "content_type": "application/json",
+      "url": "https://webapi.mir4global.com/nft/character/inven?transportID=356191&languageCode=en",
+      "response": {
+        "code": 200,
+        "data": []
       }
     },
     {

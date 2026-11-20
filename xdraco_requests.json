@@ -75,18 +75,18 @@
       "url": "https://webapi.mir4global.com/wallet/prices/draco/lastest",
       "response": {
         "data": {
-          "CreatedDT": "2026-11-19 21:15:00",
-          "DracoPrice": "0.60131022803198531",
-          "DracoAmount": "2411",
-          "DracoPricePrev": "0.59787305192461127",
-          "DracoAmountPrev": "85",
-          "USDWemixRate": "0.11619460380311024",
+          "CreatedDT": "2026-11-20 02:54:00",
+          "DracoPrice": "0.60309118659217886",
+          "DracoAmount": "2537",
+          "DracoPricePrev": "0.59823664459632142",
+          "DracoAmountPrev": "25",
+          "USDWemixRate": "0.11587793921858945",
           "USDKLAYRate": "0.0",
-          "USDWemixRatePrev": "0.1172408721393243",
-          "USDDracoRate": "0.0698690037089344",
-          "DracoPriceWemix": "0.6013102280319853",
+          "USDWemixRatePrev": "0.11502063201638033",
+          "USDDracoRate": "0.0698849638631955",
+          "DracoPriceWemix": "0.6030911865921789",
           "DracoPriceKlay": "0.0",
-          "USDDracoRatePrev": "0.0700951580362409"
+          "USDDracoRatePrev": "0.0688095569568276"
         }
       }
     }
